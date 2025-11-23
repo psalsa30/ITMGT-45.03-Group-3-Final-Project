@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin Login • UniThrift</title>
+<style>
+  :root {
+    --brand: #1e3a8a;
+    --sand: #faf6ef;
+  }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    background: linear-gradient(135deg, var(--brand) 0%, #3b82f6 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .login-container {
+    background: white;
+    padding: 48px;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    width: 100%;
+    max-width: 420px;
+  }
+  .logo {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .logo-icon {
+    font-size: 3rem;
+    margin-bottom: 16px;
+  }
+  .logo-text {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--brand);
+  }
+  .logo-subtitle {
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin-top: 4px;
+  }
+  h1 {
+    font-size: 1.5rem;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  .form-group {
+    margin-bottom: 20px;
+  }
+  label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 0.875rem;
+    color: #374151;
+  }
+  input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.2s;
+  }
+  input:focus {
+    outline: none;
+    border-color: var(--brand);
+    box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+  }
+  .login-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--brand);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+  }
+  .login-btn:hover {
+    background: #1e40af;
+    transform: translateY(-1px);
+  }
+  .login-btn:active {
+    transform: translateY(0);
+  }
+  .login-btn:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .error-message {
+    background: #fee2e2;
+    color: #991b1b;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 0.875rem;
+    display: none;
+  }
+  .error-message.show {
+    display: block;
+  }
+  .demo-credentials {
+    background: #f3f4f6;
+    padding: 16px;
+    border-radius: 8px;
+    margin-top: 24px;
+    font-size: 0.875rem;
+  }
+  .demo-credentials strong {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--brand);
+  }
+  .demo-credentials p {
+    margin: 4px 0;
+    color: #6b7280;
+  }
+  .demo-credentials code {
+    background: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+    color: #111827;
+  }
+  .back-link {
+    text-align: center;
+    margin-top: 24px;
+  }
+  .back-link a {
+    color: var(--brand);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+  }
+  .back-link a:hover {
+    text-decoration: underline;
+  }
+  .remember-me {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .remember-me input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+  }
+  .remember-me label {
+    margin: 0;
+    font-weight: 400;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="logo">
+      <div class="logo-icon">🔐</div>
+      <div class="logo-text">UniThrift Admin</div>
+      <div class="logo-subtitle">Dashboard Login</div>
+    </div>
+
+    <div id="errorMessage" class="error-message"></div>
+
+    <form id="loginForm" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input 
+          type="text" 
+          id="username" 
+          name="username" 
+          placeholder="Enter your username"
+          required
+          autocomplete="username"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input 
+          type="password" 
+          id="password" 
+          name="password" 
+          placeholder="Enter your password"
+          required
+          autocomplete="current-password"
+        >
+      </div>
+
+      <div class="remember-me">
+        <input type="checkbox" id="rememberMe" name="rememberMe">
+        <label for="rememberMe">Remember me</label>
+      </div>
+
+      <button type="submit" class="login-btn" id="loginBtn">
+        Sign In
+      </button>
+    </form>
+
+    <div class="demo-credentials">
+      <strong>📝 Demo Credentials:</strong>
+      <p>Username: <code>admin</code></p>
+      <p>Password: <code>unithrift2025</code></p>
+    </div>
+
+    <div class="back-link">
+      <a href="index.html">← Back to UniThrift</a>
+    </div>
+  </div>
+
+  <script>
+    // Demo credentials (in production, this would be handled by backend authentication)
+    const ADMIN_CREDENTIALS = {
+      username: 'admin',
+      password: 'unithrift2025'
+    };
+
+    // Check if already logged in
+    window.addEventListener('DOMContentLoaded', () => {
+      const isLoggedIn = sessionStorage.getItem('adminLoggedIn');
+      const rememberMe = localStorage.getItem('adminRememberMe');
+      
+      if (isLoggedIn === 'true' || rememberMe === 'true') {
+        window.location.href = 'admin-dashboard.html';
+      }
+    });
+
+    function showError(message) {
+      const errorDiv = document.getElementById('errorMessage');
+      errorDiv.textContent = message;
+      errorDiv.classList.add('show');
+      
+      setTimeout(() => {
+        errorDiv.classList.remove('show');
+      }, 5000);
+    }
+
+    async function handleLogin(event) {
+      event.preventDefault();
+      
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const rememberMe = document.getElementById('rememberMe').checked;
+      const btn = document.getElementById('loginBtn');
+
+      // Disable button during login
+      btn.disabled = true;
+      btn.textContent = 'Signing in...';
+
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Validate credentials
+      if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+        // Set session
+        sessionStorage.setItem('adminLoggedIn', 'true');
+        sessionStorage.setItem('adminUsername', username);
+        sessionStorage.setItem('adminLoginTime', new Date().toISOString());
+        
+        // Set remember me
+        if (rememberMe) {
+          localStorage.setItem('adminRememberMe', 'true');
+          localStorage.setItem('adminUsername', username);
+        }
+
+        // Log the login
+        const loginHistory = JSON.parse(localStorage.getItem('adminLoginHistory') || '[]');
+        loginHistory.push({
+          username: username,
+          timestamp: new Date().toISOString(),
+          success: true
+        });
+        localStorage.setItem('adminLoginHistory', JSON.stringify(loginHistory.slice(-10))); // Keep last 10
+
+        // Redirect to dashboard
+        window.location.href = 'admin-dashboard.html';
+      } else {
+        // Failed login
+        const loginHistory = JSON.parse(localStorage.getItem('adminLoginHistory') || '[]');
+        loginHistory.push({
+          username: username,
+          timestamp: new Date().toISOString(),
+          success: false
+        });
+        localStorage.setItem('adminLoginHistory', JSON.stringify(loginHistory.slice(-10)));
+
+        showError('Invalid username or password. Please try again.');
+        btn.disabled = false;
+        btn.textContent = 'Sign In';
+        
+        // Clear password field
+        document.getElementById('password').value = '';
+        document.getElementById('password').focus();
+      }
+    }
+
+    // Handle Enter key in form fields
+    document.querySelectorAll('input').forEach(input => {
+      input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+        }
+      });
+    });
+  </script>
+</body>
+</html>
