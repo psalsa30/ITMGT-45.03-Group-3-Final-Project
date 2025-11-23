@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UniThrift Plus • Premium Subscription</title>
+<style>
+  :root {
+    --brand: #1e3a8a;
+    --accent: #16a34a;
+    --gold: #fbbf24;
+    --sand: #faf6ef;
+    --ink: #111827;
+    --muted: #6b7280;
+  }
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: var(--sand);
+    color: var(--ink);
+  }
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: white;
+    border-bottom: 1px solid #eee;
+  }
+  .logo {
+    font-weight: 800;
+    color: var(--brand);
+    text-decoration: none;
+    font-size: 1.25rem;
+  }
+  .nav {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+  .nav a {
+    text-decoration: none;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .hero {
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    color: white;
+    padding: 60px 20px;
+    text-align: center;
+  }
+  .hero h1 {
+    margin: 0 0 16px;
+    font-size: clamp(2rem, 5vw, 3rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+  .hero-icon {
+    font-size: 2.5rem;
+  }
+  .hero p {
+    margin: 0 0 32px;
+    font-size: 1.25rem;
+    opacity: 0.95;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .price-tag {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+  .price-period {
+    font-size: 1.125rem;
+    opacity: 0.9;
+  }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 20px;
+  }
+  .section-title {
+    text-align: center;
+    font-size: 2rem;
+    margin: 0 0 16px;
+  }
+  .section-subtitle {
+    text-align: center;
+    color: var(--muted);
+    margin: 0 0 48px;
+    font-size: 1.125rem;
+  }
+  .benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-bottom: 60px;
+  }
+  .benefit-card {
+    background: white;
+    padding: 32px;
+    border-radius: 16px;
+    border: 2px solid #e5e7eb;
+    transition: all 0.3s;
+  }
+  .benefit-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+  }
+  .benefit-icon {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+  }
+  .benefit-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 12px;
+  }
+  .benefit-desc {
+    color: var(--muted);
+    line-height: 1.6;
+    margin: 0;
+  }
+  .comparison-table {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+    margin-bottom: 60px;
+  }
+  .comparison-header {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    background: #f9fafb;
+    font-weight: 700;
+    border-bottom: 2px solid #e5e7eb;
+  }
+  .comparison-header > div {
+    padding: 20px;
+    text-align: center;
+  }
+  .comparison-header > div:first-child {
+    text-align: left;
+  }
+  .plus-column {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+  }
+  .comparison-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  .comparison-row:last-child {
+    border-bottom: none;
+  }
+  .comparison-row > div {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .comparison-row > div:first-child {
+    justify-content: flex-start;
+    font-weight: 600;
+  }
+  .check {
+    color: #16a34a;
+    font-size: 1.5rem;
+  }
+  .cross {
+    color: #ef4444;
+    font-size: 1.5rem;
+  }
+  .cta-section {
+    background: white;
+    padding: 48px;
+    border-radius: 16px;
+    text-align: center;
+    border: 2px solid var(--gold);
+  }
+  .cta-title {
+    font-size: 2rem;
+    margin: 0 0 16px;
+  }
+  .cta-subtitle {
+    color: var(--muted);
+    margin: 0 0 32px;
+    font-size: 1.125rem;
+  }
+  .subscribe-btn {
+    background: linear-gradient(135deg, var(--brand), #3b82f6);
+    color: white;
+    padding: 16px 48px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.25rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: inline-block;
+    text-decoration: none;
+  }
+  .subscribe-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 24px rgba(30, 58, 138, 0.3);
+  }
+  .active-subscription {
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+    padding: 32px;
+    border-radius: 16px;
+    color: white;
+    margin-bottom: 32px;
+  }
+  .active-subscription h2 {
+    margin: 0 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .subscription-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .detail-item {
+    background: rgba(255,255,255,0.2);
+    padding: 16px;
+    border-radius: 8px;
+  }
+  .detail-label {
+    font-size: 0.875rem;
+    opacity: 0.9;
+    margin-bottom: 4px;
+  }
+  .detail-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+  .cancel-btn {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    padding: 10px 20px;
+    border: 1px solid rgba(255,255,255,0.5);
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 16px;
+  }
+  .cancel-btn:hover {
+    background: rgba(255,255,255,0.3);
+  }
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal.active {
+    display: flex;
+  }
+  .modal-content {
+    background: white;
+    padding: 32px;
+    border-radius: 16px;
+    max-width: 500px;
+    width: 100%;
+  }
+  .modal-title {
+    font-size: 1.5rem;
+    margin: 0 0 16px;
+  }
+  .modal-body {
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+  .modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+  }
+  .modal-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .modal-btn-primary {
+    background: var(--brand);
+    color: white;
+  }
+  .modal-btn-secondary {
+    background: #e5e7eb;
+    color: var(--ink);
+  }
+  .payment-form {
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    margin-top: 24px;
+  }
+  .form-group {
+    margin-bottom: 16px;
+  }
+  .form-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .form-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 1rem;
+  }
+  .payment-methods {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .payment-option {
+    padding: 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .payment-option:hover {
+    border-color: #cbd5e1;
+  }
+  .payment-option.selected {
+    border-color: var(--brand);
+    background: #eff6ff;
+  }
+  .payment-icon {
+    font-size: 2rem;
+    margin-bottom: 8px;
+  }
+</style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo">UniThrift</a>
+    <nav class="nav">
+      <a href="index.html">Home</a>
+      <a href="listings.html">Shop</a>
+      <a href="wishlist.html">Wishlist</a>
+      <a href="unithrift-plus.html">UniThrift Plus</a>
+      <a href="cart.html">Cart</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <h1>
+      <span class="hero-icon">⭐</span>
+      UniThrift Plus
+    </h1>
+    <p>Unlock exclusive benefits and elevate your thrifting experience</p>
+    <div class="price-tag">₱200</div>
+    <div class="price-period">per month</div>
+  </div>
+
+  <div class="container">
+    <div id="activeSubscription"></div>
+
+    <h2 class="section-title">Premium Benefits</h2>
+    <p class="section-subtitle">Everything you need for a seamless buying and selling experience</p>
+
+    <div class="benefits-grid">
+      <div class="benefit-card">
+        <div class="benefit-icon">🔔</div>
+        <h3 class="benefit-title">Instant Price Drop Alerts</h3>
+        <p class="benefit-desc">Get notified immediately when items on your wishlist drop in price. Never miss a deal!</p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-icon">📦</div>
+        <h3 class="benefit-title">Free Delivery on Orders ₱500+</h3>
+        <p class="benefit-desc">Save on delivery fees for all orders above ₱500. Shop more, pay less!</p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-icon">⚡</div>
+        <h3 class="benefit-title">Priority Listing for Sellers</h3>
+        <p class="benefit-desc">Your listings appear first in search results, getting more views and faster sales.</p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-icon">🎯</div>
+        <h3 class="benefit-title">Unlimited Listings</h3>
+        <p class="benefit-desc">Post unlimited items for sale without restrictions. Grow your selling business!</p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-icon">💬</div>
+        <h3 class="benefit-title">Priority Customer Support</h3>
+        <p class="benefit-desc">Get your questions answered first with dedicated priority support.</p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-icon">🏷️</div>
+        <h3 class="benefit-title">Exclusive Early Access</h3>
+        <p class="benefit-desc">Shop new listings 24 hours before regular users. Get the best picks first!</p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-icon">📊</div>
+        <h3 class="benefit-title">Advanced Analytics for Sellers</h3>
+        <p class="benefit-desc">Track views, engagement, and optimize your listings with detailed insights.</p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-icon">🎁</div>
+        <h3 class="benefit-title">Monthly Exclusive Deals</h3>
+        <p class="benefit-desc">Access special Plus-only deals and discounts from trusted sellers.</p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-icon">✨</div>
+        <h3 class="benefit-title">Plus Badge & Verified Status</h3>
+        <p class="benefit-desc">Stand out with a premium badge that builds trust with buyers and sellers.</p>
+      </div>
+    </div>
+
+    <h2 class="section-title">Compare Plans</h2>
+    <p class="section-subtitle">See what makes UniThrift Plus worth it</p>
+
+    <div class="comparison-table">
+      <div class="comparison-header">
+        <div>Feature</div>
+        <div>Free</div>
+        <div class="plus-column">UniThrift Plus</div>
+      </div>
+      <div class="comparison-row">
+        <div>Browse & Buy Items</div>
+        <div><span class="check">✓</span></div>
+        <div><span class="check">✓</span></div>
+      </div>
+      <div class="comparison-row">
+        <div>List Items for Sale</div>
+        <div>Up to 5 items</div>
+        <div>Unlimited</div>
+      </div>
+      <div class="comparison-row">
+        <div>Price Drop Alerts</div>
+        <div><span class="cross">✕</span></div>
+        <div><span class="check">✓</span></div>
+      </div>
+      <div class="comparison-row">
+        <div>Free Delivery (₱500+)</div>
+        <div><span class="cross">✕</span></div>
+        <div><span class="check">✓</span></div>
+      </div>
+      <div class="comparison-row">
+        <div>Priority Listing</div>
+        <div><span class="cross">✕</span></div>
+        <div><span class="check">✓</span></div>
+      </div>
+      <div class="comparison-row">
+        <div>Early Access to Listings</div>
+        <div><span class="cross">✕</span></div>
+        <div><span class="check">✓</span></div>
+      </div>
+      <div class="comparison-row">
+        <div>Analytics Dashboard</div>
+        <div><span class="cross">✕</span></div>
+        <div><span class="check">✓</span></div>
+      </div>
+      <div class="comparison-row">
+        <div>Customer Support</div>
+        <div>Standard</div>
+        <div>Priority</div>
+      </div>
+      <div class="comparison-row">
+        <div>Verified Badge</div>
+        <div><span class="cross">✕</span></div>
+        <div><span class="check">✓</span></div>
+      </div>
+    </div>
+
+    <div class="cta-section">
+      <h2 class="cta-title">Ready to upgrade your experience?</h2>
+      <p class="cta-subtitle">Join thousands of students already enjoying UniThrift Plus benefits</p>
+      <button class="subscribe-btn" onclick="openSubscribeModal()">Subscribe Now - ₱200/month</button>
+      <p style="color: var(--muted); margin-top: 16px; font-size: 0.875rem;">Cancel anytime. No hidden fees.</p>
+    </div>
+  </div>
+
+  <!-- Subscribe Modal -->
+  <div id="subscribeModal" class="modal">
+    <div class="modal-content">
+      <h2 class="modal-title">Subscribe to UniThrift Plus</h2>
+      <div class="modal-body">
+        <p>You'll be charged <strong>₱200 per month</strong> starting today.</p>
+        
+        <div class="payment-form">
+          <h3 style="margin-top: 0;">Payment Method</h3>
+          <div class="payment-methods">
+            <div class="payment-option selected" onclick="selectPayment('gcash')">
+              <div class="payment-icon">💳</div>
+              <div style="font-weight: 600; font-size: 0.875rem;">GCash</div>
+            </div>
+            <div class="payment-option" onclick="selectPayment('card')">
+              <div class="payment-icon">💳</div>
+              <div style="font-weight: 600; font-size: 0.875rem;">Card</div>
+            </div>
+            <div class="payment-option" onclick="selectPayment('bank')">
+              <div class="payment-icon">🏦</div>
+              <div style="font-weight: 600; font-size: 0.875rem;">Bank</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" class="form-input" id="emailInput" placeholder="your.email@example.com" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            <input type="tel" class="form-input" id="phoneInput" placeholder="+63 XXX XXX XXXX" required>
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn modal-btn-secondary" onclick="closeSubscribeModal()">Cancel</button>
+        <button class="modal-btn modal-btn-primary" onclick="processSubscription()">Subscribe Now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cancel Modal -->
+  <div id="cancelModal" class="modal">
+    <div class="modal-content">
+      <h2 class="modal-title">Cancel Subscription?</h2>
+      <div class="modal-body">
+        <p>Are you sure you want to cancel your UniThrift Plus subscription?</p>
+        <p>You'll lose access to:</p>
+        <ul style="color: var(--muted);">
+          <li>Price drop alerts</li>
+          <li>Free delivery on orders ₱500+</li>
+          <li>Priority listings and support</li>
+          <li>All other Plus benefits</li>
+        </ul>
+        <p><strong>Your subscription will remain active until the end of your billing period.</strong></p>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn modal-btn-secondary" onclick="closeCancelModal()">Keep Subscription</button>
+        <button class="modal-btn modal-btn-primary" onclick="confirmCancel()" style="background: #ef4444;">Cancel Subscription</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let selectedPaymentMethod = 'gcash';
+
+    function isPlusSubscriber() {
+      const subscription = JSON.parse(localStorage.getItem('unithriftPlus') || 'null');
+      if (!subscription) return false;
+      const expiryDate = new Date(subscription.expiryDate);
+      return expiryDate > new Date();
+    }
+
+    function renderSubscriptionStatus() {
+      const container = document.getElementById('activeSubscription');
+      const subscription = JSON.parse(localStorage.getItem('unithriftPlus') || 'null');
+
+      if (subscription && new Date(subscription.expiryDate) > new Date()) {
+        const daysRemaining = Math.ceil((new Date(subscription.expiryDate) - new Date()) / (1000 * 60 * 60 * 24));
+        
+        container.innerHTML = `
+          <div class="active-subscription">
+            <h2><span>⭐</span> Active UniThrift Plus Subscription</h2>
+            <p style="margin: 0; opacity: 0.9;">You're enjoying all the premium benefits!</p>
+            <div class="subscription-details">
+              <div class="detail-item">
+                <div class="detail-label">Status</div>
+                <div class="detail-value">Active</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Days Remaining</div>
+                <div class="detail-value">${daysRemaining} days</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Renewal Date</div>
+                <div class="detail-value">${new Date(subscription.expiryDate).toLocaleDateString()}</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Monthly Cost</div>
+                <div class="detail-value">₱200</div>
+              </div>
+            </div>
+            <button class="cancel-btn" onclick="openCancelModal()">Cancel Subscription</button>
+          </div>
+        `;
+      } else {
+        container.innerHTML = '';
+      }
+    }
+
+    function selectPayment(method) {
+      selectedPaymentMethod = method;
+      document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
+      event.target.closest('.payment-option').classList.add('selected');
+    }
+
+    function openSubscribeModal() {
+      if (isPlusSubscriber()) {
+        alert('You already have an active UniThrift Plus subscription!');
+        return;
+      }
+      document.getElementById('subscribeModal').classList.add('active');
+    }
+
+    function closeSubscribeModal() {
+      document.getElementById('subscribeModal').classList.remove('active');
+    }
+
+    function openCancelModal() {
+      document.getElementById('cancelModal').classList.add('active');
+    }
+
+    function closeCancelModal() {
+      document.getElementById('cancelModal').classList.remove('active');
+    }
+
+    async function processSubscription() {
+      const email = document.getElementById('emailInput').value.trim();
+      const phone = document.getElementById('phoneInput').value.trim();
+
+      if (!email || !phone) {
+        alert('Please fill in all required fields.');
+        return;
+      }
+
+      // Simulate payment processing
+      const btn = event.target;
+      btn.textContent = 'Processing...';
+      btn.disabled = true;
+
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      // Create subscription
+      const expiryDate = new Date();
+      expiryDate.setMonth(expiryDate.getMonth() + 1);
+
+      const subscription = {
+        active: true,
+        startDate: new Date().toISOString(),
+        expiryDate: expiryDate.toISOString(),
+        paymentMethod: selectedPaymentMethod,
+        email: email,
+        phone: phone,
+        amount: 200
+      };
+
+      localStorage.setItem('unithriftPlus', JSON.stringify(subscription));
+
+      // Save transaction
+      const transactions = JSON.parse(localStorage.getItem('plusTransactions') || '[]');
+      transactions.push({
+        id: 'TXN-' + Date.now(),
+        date: new Date().toISOString(),
+        amount: 200,
+        type: 'subscription',
+        status: 'completed'
+      });
+      localStorage.setItem('plusTransactions', JSON.stringify(transactions));
+
+      btn.textContent = 'Subscribe Now';
+      btn.disabled = false;
+      closeSubscribeModal();
+
+      alert('🎉 Welcome to UniThrift Plus! Your subscription is now active.');
+      renderSubscriptionStatus();
+    }
+
+    function confirmCancel() {
+      localStorage.removeItem('unithriftPlus');
+      closeCancelModal();
+      alert('Your UniThrift Plus subscription has been cancelled. You\'ll retain access until the end of your billing period.');
+      renderSubscriptionStatus();
+    }
+
+    // Initialize
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSubscriptionStatus();
+    });
+  </script>
+</body>
+</html>

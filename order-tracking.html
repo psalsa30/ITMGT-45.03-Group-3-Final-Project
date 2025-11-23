@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Track Order • UniThrift</title>
+<style>
+  body {
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    margin: 0;
+    padding: 24px;
+    background: #faf6ef;
+    color: #111827;
+  }
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  h1 {
+    margin: 0 0 8px;
+    font-size: 1.75rem;
+  }
+  .muted {
+    color: #6b7280;
+    margin: 0 0 24px;
+  }
+  .order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .order-id {
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+  .status-badge {
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  .status-confirmed {
+    background: #dcfce7;
+    color: #166534;
+  }
+  .status-preparing {
+    background: #fef3c7;
+    color: #92400e;
+  }
+  .status-ready {
+    background: #dbeafe;
+    color: #1e40af;
+  }
+  .status-completed {
+    background: #e0e7ff;
+    color: #4338ca;
+  }
+  .timeline {
+    position: relative;
+    padding-left: 40px;
+    margin: 24px 0;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #e5e7eb;
+  }
+  .timeline-item {
+    position: relative;
+    padding-bottom: 24px;
+  }
+  .timeline-item:last-child {
+    padding-bottom: 0;
+  }
+  .timeline-dot {
+    position: absolute;
+    left: -32px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: white;
+    border: 3px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+  }
+  .timeline-item.active .timeline-dot {
+    border-color: #1e3a8a;
+    background: #1e3a8a;
+    color: white;
+  }
+  .timeline-item.completed .timeline-dot {
+    border-color: #16a34a;
+    background: #16a34a;
+    color: white;
+  }
+  .timeline-content h3 {
+    margin: 0 0 4px;
+    font-size: 1rem;
+  }
+  .timeline-content .time {
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+  .order-details {
+    display: grid;
+    gap: 12px;
+    margin-top: 20px;
+  }
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #f3f4f6;
+  }
+  .detail-label {
+    color: #6b7280;
+    font-weight: 500;
+  }
+  .detail-value {
+    font-weight: 600;
+    text-align: right;
+  }
+  .items-list {
+    margin-top: 16px;
+  }
+  .item {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px;
+    background: #f9fafb;
+    border-radius: 8px;
+    margin-bottom: 8px;
+  }
+  .item-info {
+    flex: 1;
+  }
+  .item-name {
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .item-details {
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+  .item-price {
+    font-weight: 700;
+    color: #1e3a8a;
+  }
+  .search-box {
+    margin-bottom: 24px;
+  }
+  .search-box input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 1rem;
+    box-sizing: border-box;
+  }
+  .search-box button {
+    margin-top: 8px;
+    padding: 10px 16px;
+    background: #1e3a8a;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .search-box button:hover {
+    background: #1e40af;
+  }
+  .back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #1e3a8a;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .back-link:hover {
+    text-decoration: underline;
+  }
+  .total-section {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 2px solid #e5e7eb;
+  }
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1e3a8a;
+  }
+  .error-message {
+    background: #fee2e2;
+    color: #991b1b;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6b7280;
+  }
+  .empty-state-icon {
+    font-size: 3rem;
+    margin-bottom: 16px;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <a href="index.html" class="back-link">← Back to Home</a>
+
+    <div class="card">
+      <h1>Track Your Order</h1>
+      <p class="muted">Enter your order ID to check the status of your delivery.</p>
+
+      <div class="search-box" id="searchBox">
+        <input type="text" id="orderIdInput" placeholder="Enter Order ID (e.g., ORD-1234567890)">
+        <button onclick="searchOrder()">Track Order</button>
+      </div>
+
+      <div id="errorMessage" class="error-message" style="display: none;"></div>
+      <div id="orderContent"></div>
+    </div>
+  </div>
+
+  <script>
+    function formatPeso(n) {
+      const num = Number(n) || 0;
+      return "₱" + num.toLocaleString("en-PH", { maximumFractionDigits: 0 });
+    }
+
+    function formatDateTime(isoString) {
+      const date = new Date(isoString);
+      return date.toLocaleString('en-PH', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
+    function getStatusBadgeClass(status) {
+      const statusMap = {
+        'confirmed': 'status-confirmed',
+        'preparing': 'status-preparing',
+        'ready': 'status-ready',
+        'completed': 'status-completed'
+      };
+      return statusMap[status] || 'status-confirmed';
+    }
+
+    function getTimelineSteps(status) {
+      const steps = [
+        { id: 'confirmed', label: 'Order Confirmed', icon: '✓' },
+        { id: 'preparing', label: 'Preparing Order', icon: '📦' },
+        { id: 'ready', label: 'Ready for Pickup', icon: '🎉' },
+        { id: 'completed', label: 'Order Completed', icon: '✓' }
+      ];
+
+      const statusOrder = ['confirmed', 'preparing', 'ready', 'completed'];
+      const currentIndex = statusOrder.indexOf(status);
+
+      return steps.map((step, index) => {
+        let state = 'pending';
+        if (index < currentIndex) state = 'completed';
+        else if (index === currentIndex) state = 'active';
+        return { ...step, state };
+      });
+    }
+
+    function renderOrder(order) {
+      const steps = getTimelineSteps(order.status);
+      
+      const timeline = steps.map(step => `
+        <div class="timeline-item ${step.state}">
+          <div class="timeline-dot">${step.icon}</div>
+          <div class="timeline-content">
+            <h3>${step.label}</h3>
+            <div class="time">${step.state === 'active' || step.state === 'completed' ? formatDateTime(order.timestamp) : 'Pending'}</div>
+          </div>
+        </div>
+      `).join('');
+
+      const items = order.items.map(item => `
+        <div class="item">
+          <div class="item-info">
+            <div class="item-name">${item.name}</div>
+            <div class="item-details">Quantity: ${item.qty} × ${formatPeso(item.price)}</div>
+          </div>
+          <div class="item-price">${formatPeso(item.price * item.qty)}</div>
+        </div>
+      `).join('');
+
+      return `
+        <div class="order-header">
+          <div>
+            <div class="order-id">Order #${order.orderId}</div>
+            <div class="muted" style="margin: 4px 0 0;">${formatDateTime(order.timestamp)}</div>
+          </div>
+          <div class="status-badge ${getStatusBadgeClass(order.status)}">
+            ${order.status.toUpperCase()}
+          </div>
+        </div>
+
+        <div class="timeline">
+          ${timeline}
+        </div>
+
+        <div class="order-details">
+          <div class="detail-row">
+            <span class="detail-label">Payment Method:</span>
+            <span class="detail-value">${order.paymentMethod?.toUpperCase() || 'CASH'}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Delivery Address:</span>
+            <span class="detail-value">${order.address || 'Pickup at campus'}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Contact:</span>
+            <span class="detail-value">${order.phone || 'N/A'}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Estimated Delivery:</span>
+            <span class="detail-value">${order.estimatedDelivery ? formatDateTime(order.estimatedDelivery) : '15-30 minutes'}</span>
+          </div>
+        </div>
+
+        <h3 style="margin-top: 24px; margin-bottom: 12px;">Order Items</h3>
+        <div class="items-list">
+          ${items}
+        </div>
+
+        <div class="total-section">
+          <div class="detail-row">
+            <span class="detail-label">Subtotal:</span>
+            <span class="detail-value">${formatPeso(order.subtotal)}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Delivery Fee:</span>
+            <span class="detail-value">${formatPeso(order.deliveryFee)}</span>
+          </div>
+          <div class="total-row">
+            <span>Total:</span>
+            <span>${formatPeso(order.total)}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function searchOrder() {
+      const orderId = document.getElementById('orderIdInput').value.trim();
+      const errorMsg = document.getElementById('errorMessage');
+      const content = document.getElementById('orderContent');
+
+      if (!orderId) {
+        errorMsg.textContent = 'Please enter an order ID.';
+        errorMsg.style.display = 'block';
+        content.innerHTML = '';
+        return;
+      }
+
+      // Get orders from memory
+      const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+      const order = orders.find(o => o.orderId === orderId);
+
+      if (order) {
+        errorMsg.style.display = 'none';
+        content.innerHTML = renderOrder(order);
+      } else {
+        errorMsg.textContent = `Order ${orderId} not found. Please check your order ID and try again.`;
+        errorMsg.style.display = 'block';
+        content.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📦</div>
+            <h3>Order Not Found</h3>
+            <p>We couldn't find an order with this ID. Please check and try again.</p>
+          </div>
+        `;
+      }
+    }
+
+    // Auto-load if orderId is in URL
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const orderId = urlParams.get('orderId');
+      
+      if (orderId) {
+        document.getElementById('orderIdInput').value = orderId;
+        searchOrder();
+      } else {
+        // Try to load last order
+        const lastOrderId = localStorage.getItem('lastOrderId');
+        if (lastOrderId) {
+          document.getElementById('orderIdInput').value = lastOrderId;
+          searchOrder();
+        }
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Wishlist • UniThrift</title>
+<style>
+  :root {
+    --brand: #1e3a8a;
+    --accent: #16a34a;
+    --sand: #faf6ef;
+    --ink: #111827;
+    --muted: #6b7280;
+  }
+  body {
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: var(--sand);
+    color: var(--ink);
+  }
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: white;
+    border-bottom: 1px solid #eee;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .logo {
+    font-weight: 800;
+    color: var(--brand);
+    text-decoration: none;
+    font-size: 1.25rem;
+  }
+  .nav {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+  .nav a {
+    text-decoration: none;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px 20px;
+  }
+  h1 {
+    margin: 0 0 8px;
+    font-size: 2rem;
+  }
+  .header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .subtitle {
+    color: var(--muted);
+    margin: 0;
+  }
+  .plus-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+  .upgrade-banner {
+    background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .upgrade-banner h3 {
+    margin: 0 0 8px;
+    font-size: 1.25rem;
+  }
+  .upgrade-banner p {
+    margin: 0;
+    opacity: 0.9;
+  }
+  .upgrade-btn {
+    background: white;
+    color: var(--brand);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .upgrade-btn:hover {
+    background: #f9fafb;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+  }
+  .card {
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  }
+  .card-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    background: #f3f4f6;
+  }
+  .card-content {
+    padding: 16px;
+  }
+  .card-title {
+    font-weight: 700;
+    margin: 0 0 8px;
+    font-size: 1rem;
+  }
+  .card-price {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--brand);
+    margin-bottom: 8px;
+  }
+  .card-meta {
+    font-size: 0.875rem;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .card-actions {
+    display: flex;
+    gap: 8px;
+  }
+  .btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    flex: 1;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--brand);
+    color: white;
+  }
+  .btn-primary:hover {
+    background: #1e40af;
+  }
+  .btn-secondary {
+    background: #f3f4f6;
+    color: var(--ink);
+  }
+  .btn-secondary:hover {
+    background: #e5e7eb;
+  }
+  .wishlist-heart {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: white;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.25rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 1;
+  }
+  .wishlist-heart:hover {
+    transform: scale(1.1);
+  }
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+  }
+  .empty-icon {
+    font-size: 4rem;
+    margin-bottom: 16px;
+  }
+  .empty-state h2 {
+    margin: 0 0 12px;
+    color: var(--ink);
+  }
+  .empty-state p {
+    color: var(--muted);
+    margin: 0 0 24px;
+  }
+  .tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    border-bottom: 2px solid #e5e7eb;
+  }
+  .tab {
+    padding: 12px 20px;
+    background: none;
+    border: none;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.2s;
+  }
+  .tab.active {
+    color: var(--brand);
+    border-bottom-color: var(--brand);
+  }
+  .tab:hover {
+    color: var(--ink);
+  }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+  }
+  .stat-label {
+    color: var(--muted);
+    font-size: 0.875rem;
+    margin-bottom: 8px;
+  }
+  .stat-value {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--brand);
+  }
+  .price-drop-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: #ef4444;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+  .notification-dot {
+    width: 8px;
+    height: 8px;
+    background: #ef4444;
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 4px;
+  }
+</style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo">UniThrift</a>
+    <nav class="nav">
+      <a href="index.html">Home</a>
+      <a href="listings.html">Shop</a>
+      <a href="wishlist.html">Wishlist</a>
+      <a href="unithrift-plus.html">UniThrift Plus</a>
+      <a href="cart.html">Cart</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="header-section">
+      <div>
+        <h1>My Wishlist <span id="wishlistCount">(0)</span></h1>
+        <p class="subtitle">Save items you love and get notified when prices drop</p>
+      </div>
+      <div id="plusBadgeContainer"></div>
+    </div>
+
+    <div id="upgradePrompt"></div>
+
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-label">Total Saved Items</div>
+        <div class="stat-value" id="totalItems">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Value</div>
+        <div class="stat-value" id="totalValue">₱0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Price Drops <span id="priceDropIndicator"></span></div>
+        <div class="stat-value" id="priceDrops">0</div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="filterWishlist('all')">All Items</button>
+      <button class="tab" onclick="filterWishlist('price-drops')">Price Drops</button>
+      <button class="tab" onclick="filterWishlist('in-stock')">In Stock</button>
+    </div>
+
+    <div id="wishlistGrid" class="grid"></div>
+    <div id="emptyState" class="empty-state" style="display: none;">
+      <div class="empty-icon">💝</div>
+      <h2>Your wishlist is empty</h2>
+      <p>Start adding items you love to keep track of them!</p>
+      <a href="listings.html" class="upgrade-btn">Browse Items</a>
+    </div>
+  </div>
+
+  <script>
+    // Sample products for demo
+    const allProducts = [
+      { id: "b-101", name: "GE Book: Ethics", price: 120, originalPrice: 150, campus: "ADMU", category: "Books", image: "https://picsum.photos/seed/book/400/300", inStock: true },
+      { id: "s-201", name: "A4 Bond Paper (500s)", price: 180, campus: "ADMU", category: "School Supplies", image: "https://picsum.photos/seed/paper/400/300", inStock: true },
+      { id: "g-301", name: "Wired Earphones", price: 150, originalPrice: 180, campus: "UPD", category: "Gadgets", image: "https://picsum.photos/seed/ear/400/300", inStock: true },
+      { id: "p-401", name: "Preloved Hoodie", price: 130, campus: "ADMU", category: "Preloved", image: "https://picsum.photos/seed/hood/400/300", inStock: false },
+      { id: "b-102", name: "Calculus Textbook", price: 200, originalPrice: 250, campus: "UST", category: "Books", image: "https://picsum.photos/seed/calc/400/300", inStock: true },
+    ];
+
+    function getWishlist() {
+      try {
+        return JSON.parse(localStorage.getItem('wishlist') || '[]');
+      } catch {
+        return [];
+      }
+    }
+
+    function saveWishlist(wishlist) {
+      localStorage.setItem('wishlist', JSON.stringify(wishlist));
+    }
+
+    function isInWishlist(productId) {
+      const wishlist = getWishlist();
+      return wishlist.includes(productId);
+    }
+
+    function toggleWishlist(productId) {
+      let wishlist = getWishlist();
+      if (wishlist.includes(productId)) {
+        wishlist = wishlist.filter(id => id !== productId);
+      } else {
+        wishlist.push(productId);
+      }
+      saveWishlist(wishlist);
+      renderWishlist();
+    }
+
+    function addToCart(productId) {
+      const product = allProducts.find(p => p.id === productId);
+      if (!product) return;
+
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      const existingItem = cart.find(item => item.productId === productId);
+
+      if (existingItem) {
+        existingItem.quantity = (existingItem.quantity || 1) + 1;
+      } else {
+        cart.push({
+          productId: product.id,
+          name: product.name,
+          price: product.price,
+          quantity: 1,
+          image: product.image
+        });
+      }
+
+      localStorage.setItem('cart', JSON.stringify(cart));
+      alert(`${product.name} added to cart!`);
+    }
+
+    function formatPeso(n) {
+      return "₱" + Number(n).toLocaleString("en-PH", { maximumFractionDigits: 0 });
+    }
+
+    function isPlusSubscriber() {
+      const subscription = JSON.parse(localStorage.getItem('unithriftPlus') || 'null');
+      if (!subscription) return false;
+      const expiryDate = new Date(subscription.expiryDate);
+      return expiryDate > new Date();
+    }
+
+    function renderWishlist(filter = 'all') {
+      const wishlistIds = getWishlist();
+      const wishlistProducts = allProducts.filter(p => wishlistIds.includes(p.id));
+      
+      let filteredProducts = wishlistProducts;
+      if (filter === 'price-drops') {
+        filteredProducts = wishlistProducts.filter(p => p.originalPrice && p.originalPrice > p.price);
+      } else if (filter === 'in-stock') {
+        filteredProducts = wishlistProducts.filter(p => p.inStock);
+      }
+
+      const grid = document.getElementById('wishlistGrid');
+      const emptyState = document.getElementById('emptyState');
+      const isPlus = isPlusSubscriber();
+
+      // Update stats
+      document.getElementById('totalItems').textContent = wishlistProducts.length;
+      const totalValue = wishlistProducts.reduce((sum, p) => sum + p.price, 0);
+      document.getElementById('totalValue').textContent = formatPeso(totalValue);
+      
+      const priceDropCount = wishlistProducts.filter(p => p.originalPrice && p.originalPrice > p.price).length;
+      document.getElementById('priceDrops').textContent = priceDropCount;
+      document.getElementById('priceDropIndicator').innerHTML = priceDropCount > 0 ? '<span class="notification-dot"></span>' : '';
+      
+      document.getElementById('wishlistCount').textContent = `(${wishlistProducts.length})`;
+
+      // Show Plus badge if subscribed
+      const badgeContainer = document.getElementById('plusBadgeContainer');
+      if (isPlus) {
+        badgeContainer.innerHTML = '<span class="plus-badge">⭐ UniThrift Plus</span>';
+      } else {
+        badgeContainer.innerHTML = '';
+      }
+
+      // Show upgrade prompt for non-Plus users
+      const upgradePrompt = document.getElementById('upgradePrompt');
+      if (!isPlus && wishlistProducts.length > 0) {
+        upgradePrompt.innerHTML = `
+          <div class="upgrade-banner">
+            <div>
+              <h3>🌟 Upgrade to UniThrift Plus</h3>
+              <p>Get instant price drop alerts, priority support, and exclusive deals for only ₱200/month!</p>
+            </div>
+            <a href="unithrift-plus.html" class="upgrade-btn">Upgrade Now</a>
+          </div>
+        `;
+      } else {
+        upgradePrompt.innerHTML = '';
+      }
+
+      if (filteredProducts.length === 0) {
+        grid.style.display = 'none';
+        emptyState.style.display = 'block';
+        if (filter !== 'all') {
+          emptyState.innerHTML = `
+            <div class="empty-icon">🔍</div>
+            <h2>No items found</h2>
+            <p>Try a different filter or add more items to your wishlist.</p>
+          `;
+        }
+      } else {
+        grid.style.display = 'grid';
+        emptyState.style.display = 'none';
+        
+        grid.innerHTML = filteredProducts.map(product => {
+          const hasPriceDrop = product.originalPrice && product.originalPrice > product.price;
+          const discount = hasPriceDrop ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) : 0;
+
+          return `
+            <div class="card">
+              ${hasPriceDrop ? `<div class="price-drop-badge">-${discount}% OFF</div>` : ''}
+              <button class="wishlist-heart" onclick="toggleWishlist('${product.id}')">
+                ❤️
+              </button>
+              <img src="${product.image}" alt="${product.name}" class="card-image">
+              <div class="card-content">
+                <div class="card-title">${product.name}</div>
+                <div class="card-price">
+                  ${formatPeso(product.price)}
+                  ${hasPriceDrop ? `<span style="font-size: 0.875rem; color: #6b7280; text-decoration: line-through; font-weight: 400;">${formatPeso(product.originalPrice)}</span>` : ''}
+                </div>
+                <div class="card-meta">
+                  ${product.campus} • ${product.category}
+                  ${product.inStock ? '<span style="color: #16a34a;">• In Stock</span>' : '<span style="color: #ef4444;">• Out of Stock</span>'}
+                </div>
+                <div class="card-actions">
+                  <button class="btn btn-primary" onclick="addToCart('${product.id}')" ${!product.inStock ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>
+                    ${product.inStock ? 'Add to Cart' : 'Out of Stock'}
+                  </button>
+                  <button class="btn btn-secondary" onclick="toggleWishlist('${product.id}')">
+                    Remove
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    function filterWishlist(filter) {
+      // Update active tab
+      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+      event.target.classList.add('active');
+      renderWishlist(filter);
+    }
+
+    // Initialize wishlist with some demo items if empty
+    window.addEventListener('DOMContentLoaded', () => {
+      const wishlist = getWishlist();
+      if (wishlist.length === 0) {
+        // Add some demo items
+        saveWishlist(['b-101', 'g-301', 'b-102']);
+      }
+      renderWishlist();
+    });
+  </script>
+</body>
+</html>

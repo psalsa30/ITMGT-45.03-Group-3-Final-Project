@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Checkout • UniThrift</title>
+<style>
+  body {
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    margin: 24px;
+    color: #111827;
+    background: #faf6ef;
+  }
+  .card {
+    max-width: 720px;
+    margin: 0 auto;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px;
+    background: white;
+  }
+  h1 { margin: 0 0 8px; }
+  h2 { margin: 24px 0 12px; font-size: 1.25rem; }
+  .muted { color: #6b7280; margin: 0 0 16px; }
+  table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+  th, td { padding: 8px 6px; border-bottom: 1px solid #f1f5f9; text-align: left; }
+  tfoot td { font-weight: 700; }
+  .actions { margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap; }
+  button { padding: 10px 14px; border: 0; border-radius: 8px; cursor: pointer; font-weight: 600; }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  #placeOrder { background: black; color: white; }
+  #clearCart { background: #e5e7eb; }
+  .ok {
+    color: #166534;
+    background: #dcfce7;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 16px;
+    display: none;
+  }
+  .err {
+    color: #991b1b;
+    background: #fee2e2;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 16px;
+    display: none;
+  }
+  .post-actions {
+    display: none;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .link {
+    background: #111827;
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+    padding: 10px 14px;
+    border-radius: 8px;
+  }
+  .ghost { background: #e5e7eb; color: #111827; }
+  label { font-weight: 600; display: block; margin-top: 16px; }
+  input, select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    margin-top: 6px;
+    box-sizing: border-box;
+  }
+  .payment-methods {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .payment-option {
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 16px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+  }
+  .payment-option:hover {
+    border-color: #cbd5e1;
+  }
+  .payment-option.selected {
+    border-color: #1e3a8a;
+    background: #eff6ff;
+  }
+  .payment-option input[type="radio"] {
+    display: none;
+  }
+  .payment-option .icon {
+    font-size: 2rem;
+    margin-bottom: 8px;
+  }
+  .payment-option .name {
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  .payment-details {
+    display: none;
+    margin-top: 16px;
+    padding: 16px;
+    background: #f9fafb;
+    border-radius: 8px;
+  }
+  .payment-details.active {
+    display: block;
+  }
+  .card-input-group {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 12px;
+  }
+  .progress-steps {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    position: relative;
+  }
+  .progress-steps::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #e5e7eb;
+    z-index: 0;
+  }
+  .step {
+    flex: 1;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+  .step-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #e5e7eb;
+    color: #6b7280;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .step.active .step-circle {
+    background: #1e3a8a;
+    color: white;
+  }
+  .step.completed .step-circle {
+    background: #16a34a;
+    color: white;
+  }
+  .step-label {
+    font-size: 0.85rem;
+    color: #6b7280;
+  }
+  .step.active .step-label {
+    color: #111827;
+    font-weight: 600;
+  }
+  .order-summary {
+    background: #f9fafb;
+    padding: 16px;
+    border-radius: 8px;
+    margin-top: 16px;
+  }
+  .order-summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .order-summary-row.total {
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding-top: 8px;
+    border-top: 2px solid #e5e7eb;
+    margin-top: 8px;
+  }
+  .back-link {
+    display: inline-block;
+    margin-bottom: 16px;
+    color: #1e3a8a;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .back-link:hover {
+    text-decoration: underline;
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <a href="cart.html" class="back-link">← Back to Cart</a>
+    
+    <div class="progress-steps">
+      <div class="step active" id="step1">
+        <div class="step-circle">1</div>
+        <div class="step-label">Cart Review</div>
+      </div>
+      <div class="step" id="step2">
+        <div class="step-circle">2</div>
+        <div class="step-label">Payment</div>
+      </div>
+      <div class="step" id="step3">
+        <div class="step-circle">3</div>
+        <div class="step-label">Confirmation</div>
+      </div>
+    </div>
+
+    <h1>Checkout</h1>
+    <p class="muted">Review your items and complete your order.</p>
+
+    <!-- Cart Items -->
+    <table id="cartTable" aria-label="Cart items">
+      <thead>
+        <tr><th>Item</th><th>Qty</th><th>Price</th><th>Subtotal</th></tr>
+      </thead>
+      <tbody id="cartBody"></tbody>
+    </table>
+
+    <!-- Delivery Information -->
+    <h2>Delivery Information</h2>
+    <label for="zip">ZIP Code:</label>
+    <input type="text" id="zip" placeholder="e.g. 1108">
+    <p id="cityInfo" class="muted" style="margin-top: 8px;">City: —</p>
+
+    <label for="address">Delivery Address:</label>
+    <input type="text" id="address" placeholder="Building/Street/Barangay">
+
+    <label for="phone">Contact Number:</label>
+    <input type="tel" id="phone" placeholder="+63 XXX XXX XXXX">
+
+    <!-- Payment Method -->
+    <h2>Payment Method</h2>
+    <div class="payment-methods">
+      <label class="payment-option" for="gcash">
+        <input type="radio" name="payment" id="gcash" value="gcash">
+        <div class="icon">💳</div>
+        <div class="name">GCash</div>
+      </label>
+      <label class="payment-option" for="card">
+        <input type="radio" name="payment" id="card" value="card">
+        <div class="icon">💳</div>
+        <div class="name">Credit/Debit</div>
+      </label>
+      <label class="payment-option" for="cash">
+        <input type="radio" name="payment" id="cash" value="cash" checked>
+        <div class="icon">💵</div>
+        <div class="name">Cash on Pickup</div>
+      </label>
+    </div>
+
+    <!-- GCash Payment Details -->
+    <div id="gcashDetails" class="payment-details">
+      <label for="gcashNumber">GCash Number:</label>
+      <input type="tel" id="gcashNumber" placeholder="09XX XXX XXXX">
+      <p class="muted" style="margin-top: 8px; font-size: 0.9rem;">
+        You'll receive a payment request on your GCash app after placing your order.
+      </p>
+    </div>
+
+    <!-- Card Payment Details -->
+    <div id="cardDetails" class="payment-details">
+      <label for="cardNumber">Card Number:</label>
+      <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+      
+      <div class="card-input-group" style="margin-top: 12px;">
+        <div>
+          <label for="cardName">Cardholder Name:</label>
+          <input type="text" id="cardName" placeholder="JUAN DELA CRUZ">
+        </div>
+        <div>
+          <label for="cardExpiry">Expiry:</label>
+          <input type="text" id="cardExpiry" placeholder="MM/YY" maxlength="5">
+        </div>
+        <div>
+          <label for="cardCvv">CVV:</label>
+          <input type="text" id="cardCvv" placeholder="123" maxlength="3">
+        </div>
+      </div>
+      <p class="muted" style="margin-top: 8px; font-size: 0.9rem;">
+        🔒 This is a sandbox environment. Use test card: 4242 4242 4242 4242
+      </p>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="order-summary">
+      <h3 style="margin-top: 0;">Order Summary</h3>
+      <div class="order-summary-row">
+        <span>Subtotal:</span>
+        <span id="subtotal">₱0</span>
+      </div>
+      <div class="order-summary-row">
+        <span>Delivery Fee:</span>
+        <span id="deliveryFee">₱0</span>
+      </div>
+      <div class="order-summary-row total">
+        <span>Total:</span>
+        <span id="grandTotal">₱0</span>
+      </div>
+    </div>
+
+    <div class="actions" id="preActions">
+      <button type="button" id="placeOrder">Place Order</button>
+      <button type="button" id="clearCart">Clear Cart</button>
+    </div>
+
+    <div id="ok" class="ok"></div>
+    <div id="err" class="err"></div>
+
+    <div id="postActions" class="post-actions">
+      <a href="order-tracking.html" class="link" id="trackOrderLink">Track Order</a>
+      <a href="index.html" class="link ghost">Continue Shopping</a>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = "http://localhost:8000";
+
+    function loadCart() {
+      try { return JSON.parse(localStorage.getItem("cart") || "[]"); }
+      catch { return []; }
+    }
+
+    function formatPeso(n) {
+      const num = Number(n) || 0;
+      return "₱" + num.toLocaleString("en-PH", { maximumFractionDigits: 0 });
+    }
+
+    function renderCart() {
+      const cart = loadCart();
+      const tbody = document.getElementById("cartBody");
+      tbody.innerHTML = "";
+
+      let subtotal = 0;
+      cart.forEach(item => {
+        const qty = Number(item.qty || item.quantity) || 0;
+        const price = Number(item.price) || 0;
+        const sub = price * qty;
+        subtotal += sub;
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${item.name ?? "(Unnamed)"}</td>
+          <td>${qty}</td>
+          <td>${formatPeso(price)}</td>
+          <td>${formatPeso(sub)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const deliveryFee = subtotal > 0 ? 50 : 0;
+      const total = subtotal + deliveryFee;
+
+      document.getElementById("subtotal").textContent = formatPeso(subtotal);
+      document.getElementById("deliveryFee").textContent = formatPeso(deliveryFee);
+      document.getElementById("grandTotal").textContent = formatPeso(total);
+    }
+
+    // Payment method selection
+    document.querySelectorAll('.payment-option').forEach(option => {
+      option.addEventListener('click', () => {
+        document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
+        option.classList.add('selected');
+        
+        document.querySelectorAll('.payment-details').forEach(d => d.classList.remove('active'));
+        
+        const value = option.querySelector('input').value;
+        if (value === 'gcash') {
+          document.getElementById('gcashDetails').classList.add('active');
+        } else if (value === 'card') {
+          document.getElementById('cardDetails').classList.add('active');
+        }
+      });
+    });
+
+    // Card number formatting
+    document.getElementById('cardNumber')?.addEventListener('input', (e) => {
+      let value = e.target.value.replace(/\s/g, '');
+      let formatted = value.match(/.{1,4}/g)?.join(' ') || value;
+      e.target.value = formatted;
+    });
+
+    // Expiry formatting
+    document.getElementById('cardExpiry')?.addEventListener('input', (e) => {
+      let value = e.target.value.replace(/\D/g, '');
+      if (value.length >= 2) {
+        value = value.slice(0, 2) + '/' + value.slice(2, 4);
+      }
+      e.target.value = value;
+    });
+
+    // ZIP Code lookup
+    document.getElementById("zip").addEventListener("input", async (e) => {
+      const zip = e.target.value.trim();
+      const cityEl = document.getElementById("cityInfo");
+      if (zip.length < 4) {
+        cityEl.textContent = "City: —";
+        return;
+      }
+
+      try {
+        const response = await fetch(`https://api.zippopotam.us/ph/${zip}`);
+        if (!response.ok) throw new Error("Invalid ZIP");
+        const data = await response.json();
+        const place = data.places?.[0]?.["place name"] || "Unknown";
+        cityEl.textContent = `City: ${place}`;
+      } catch {
+        cityEl.textContent = "City: (not found)";
+      }
+    });
+
+    async function doCheckout() {
+      const ok = document.getElementById("ok");
+      const err = document.getElementById("err");
+      const pre = document.getElementById("preActions");
+      const post = document.getElementById("postActions");
+      ok.style.display = "none";
+      err.style.display = "none";
+
+      // Validation
+      const address = document.getElementById("address").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const paymentMethod = document.querySelector('input[name="payment"]:checked')?.value;
+
+      if (!address || !phone) {
+        err.textContent = "Please fill in delivery address and contact number.";
+        err.style.display = "block";
+        return;
+      }
+
+      if (paymentMethod === 'gcash') {
+        const gcashNumber = document.getElementById('gcashNumber').value.trim();
+        if (!gcashNumber) {
+          err.textContent = "Please enter your GCash number.";
+          err.style.display = "block";
+          return;
+        }
+      } else if (paymentMethod === 'card') {
+        const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');
+        const cardName = document.getElementById('cardName').value.trim();
+        const cardExpiry = document.getElementById('cardExpiry').value.trim();
+        const cardCvv = document.getElementById('cardCvv').value.trim();
+        
+        if (!cardNumber || !cardName || !cardExpiry || !cardCvv) {
+          err.textContent = "Please fill in all card details.";
+          err.style.display = "block";
+          return;
+        }
+
+        if (cardNumber.length !== 16) {
+          err.textContent = "Invalid card number.";
+          err.style.display = "block";
+          return;
+        }
+      }
+
+      const btn = document.getElementById("placeOrder");
+      btn.disabled = true;
+      btn.textContent = "Processing…";
+
+      // Update progress
+      document.getElementById('step1').classList.add('completed');
+      document.getElementById('step2').classList.add('active');
+
+      const cart = loadCart();
+      const items = cart.map(i => ({
+        productId: i.id ?? i.productId ?? String(i.name || "item"),
+        name: i.name ?? "Item",
+        price: Number(i.price) || 0,
+        qty: Number(i.qty || i.quantity) || 0
+      }));
+
+      // Simulate payment processing
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      try {
+        // In production, you'd call your backend API here
+        const orderId = "ORD-" + Date.now();
+        const subtotal = items.reduce((sum, i) => sum + (i.price * i.qty), 0);
+        const deliveryFee = 50;
+        const total = subtotal + deliveryFee;
+
+        // Store order in memory
+        const order = {
+          orderId,
+          items,
+          subtotal,
+          deliveryFee,
+          total,
+          paymentMethod,
+          address,
+          phone,
+          status: 'confirmed',
+          timestamp: new Date().toISOString(),
+          estimatedDelivery: new Date(Date.now() + 15 * 60 * 1000).toISOString()
+        };
+
+        // Save to memory (in production, this would go to your backend)
+        const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+        orders.push(order);
+        localStorage.setItem('orders', JSON.stringify(orders));
+        localStorage.setItem('lastOrderId', orderId);
+
+        // Update progress
+        document.getElementById('step2').classList.add('completed');
+        document.getElementById('step3').classList.add('active');
+
+        ok.innerHTML = `
+          <strong>🎉 Order Confirmed!</strong><br/>
+          Order ID: <strong>${orderId}</strong><br/>
+          Total: ${formatPeso(total)}<br/>
+          Payment: ${paymentMethod.toUpperCase()}<br/>
+          Estimated Pickup: 15 minutes
+        `;
+        ok.style.display = "block";
+
+        localStorage.removeItem("cart");
+        renderCart();
+
+        pre.style.display = "none";
+        post.style.display = "flex";
+        
+        document.getElementById('trackOrderLink').href = `order-tracking.html?orderId=${orderId}`;
+      } catch (e) {
+        err.textContent = e.message || "Something went wrong during checkout.";
+        err.style.display = "block";
+        document.getElementById('step2').classList.remove('active');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Place Order";
+      }
+    }
+
+    function clearCart() {
+      if (confirm('Are you sure you want to clear your cart?')) {
+        localStorage.removeItem("cart");
+        renderCart();
+        document.getElementById("ok").style.display = "none";
+        document.getElementById("err").style.display = "none";
+      }
+    }
+
+    document.getElementById("placeOrder").addEventListener("click", doCheckout);
+    document.getElementById("clearCart").addEventListener("click", clearCart);
+
+    // Set default selected payment
+    document.querySelector('.payment-option[for="cash"]').classList.add('selected');
+
+    renderCart();
+  </script>
+</body>
+</html>
