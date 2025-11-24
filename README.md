@@ -54,8 +54,6 @@ Returns all stored orders (from orders.json).
 
 ## List of Features:
 
-Coupon feature
-
 1. User Authentication System
   • User signup with email, name, and password
   • Secure login using JWT
@@ -116,6 +114,7 @@ Coupon feature
  • Frontend on Netlify
  • Backend on Railway
 
++ Coupon feature
 
 
 ## SEO
