@@ -56,7 +56,67 @@ Returns all stored orders (from orders.json).
 
 Coupon feature
 
-Add More
+1. User Authentication System
+  • User signup with email, name, and password
+  • Secure login using JWT
+  • Auth tokens stored in localStorage
+  • Protected routes in frontend (seller dashboard, checkout, orders)
+  • /api/me endpoint to fetch current user
+
+2. Product Listing (Seller Side)
+ • Sellers can create listings with:
+    • Name
+    • Price
+    • Image URL
+    • Campus
+    • Category
+ • Listings appear immediately in the public shop
+ • Sellers can delete their own products
+ • Seller dashboard displays:
+    • All their listings
+       • Delete buttons
+       • Auto-refresh of product list
+   
+3. Public Product Shop (Buyer Side)
+ • Product catalog displays all active listings
+ • Filter by campus
+ • View product details (name, price, image)
+ • Add to Cart button for each product
+ • Cart stored in browser localStorage
+
+4. Shopping Cart System
+ • Add items to cart
+ • Increment quantity
+ • Remove items
+ • Auto-compute:
+    • Subtotal
+    • Discounts
+    • Final total
+ • Support for coupon codes:
+    • NISTUDENT10 (10% off)
+    • FREESHIP20 (₱20 off ₱150+)
+
+5. Checkout Flow
+ • Requires user to be logged in
+ • Requires phone number to proceed
+ • Sends checkout request to backend with:
+    • Cart items
+    • Campus
+    • Pickup location
+    • Coupon code
+    • Phone number
+ • Stores order in database using Prisma
+ • Redirects to Checkout Success page
+
+6. Buyer Order History
+7. Seller Sales Tracking
+8. Admin Analytics Dashboard
+9. Responsive Navigation System
+10. Fully Deployed System
+ • Frontend on Netlify
+ • Backend on Railway
+
+
 
 ## SEO
 Added meta tags: description, keywords, author, Open Graph data.
