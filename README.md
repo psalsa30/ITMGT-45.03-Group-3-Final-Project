@@ -127,6 +127,7 @@ Reduced inline script repetition, optimized DOM lookups.
 ![after](image-1.png)
 
 ### GC3 SEO
+![after](final-performance.jpeg)
 
 ## Limitations
 
