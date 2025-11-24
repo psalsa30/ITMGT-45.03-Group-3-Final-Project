@@ -1,15 +1,31 @@
 # Group-3-Core-E-Commerce-Build
-ITMGT 45.03 YZW GC 2
+ITMGT 45.03 YZW Group Final Project
+
+Business Concept:
+Many students often overspend on different products like clothes, supplies, gadgets, etc. while simultaneously wasting unused products. UniThrift offers 
+the solution for this in the form of an efficient marketplace for students to buy and sell products, new or second hand, within their school community, 
+making transactions easier and safer. The technology stack used supports quick MVP development, establishing a strong foundation for future scale and enhancements. 
 
 
-Layer	            Technology	               Version	                  Purpose
-Frontend	    HTML5, CSS3, JavaScript (Vanilla)	—	               UI pages and cart logic
-Backend	        Node.js + Express.js	           18.x	         REST API for products and orders
-Database	    JSON file (mock DB)	   	            -                    Order persistence
-External API	Zippopotam.us	                    -               Live ZIP → City lookup
-Hosting	Netlify	   	  -                             -                    Frontend deployment
-Hosting	Render	  	  -                             -                    Backend deployment
 
+| Layer            | Technology                              | Version                        | Purpose                          |
+| ---------------- | --------------------------------------- | ------------------------------ | -------------------------------- |
+| **Frontend**     | HTML5, CSS3, Vanilla JavaScript         | —                              | UI pages and cart logic          |
+|                  | Chart.js                                | 4.x (via CDN)                  | Admin dashboard charts           |
+| **Backend**      | Node.js + Express.js                    | Node v20+ / v25.x, Express 4.x | REST API for products and orders |
+|                  | Prisma ORM                              | 5.22.0                         | Database ORM                     |
+|                  | SQLite (file-based)                     | — (`prisma/dev.db`)            | Local database persistence       |
+|                  | CORS middleware                         | 2.x                            | Cross-origin support             |
+|                  | JSON Web Token (`jsonwebtoken`)         | 9.x                            | Authentication                   |
+| **Database**     | JSON file (mock DB) OR Prisma SQLite DB | —                              | Order persistence (dev)          |
+| **External API** | Zippopotam.us                           | —                              | Live ZIP → City lookup           |
+| **Hosting**      | Netlify                                 | —                              | Frontend deployment              |
+|                  | Render                                  | —                              | Backend deployment               |
+| **Tooling**      | npm                                     | 10+                            | Package management               |
+|                  | Prisma CLI                              | 5.22.0                         | Schema + migration tooling       |
+|                  | Git + GitHub                            | —                              | Version control                  |
+
+Deployment Link: https://courageous-licorice-2f94a2.netlify.app/ 
 
 Running the Backend
     cd server
@@ -37,12 +53,12 @@ GET /api/orders
 Returns all stored orders (from orders.json).
 
 Live API Integration
-
 Uses the Zippopotam.us API: GET https://api.zippopotam.us/ph/{ZIPCODE}
 
+List of GC1 Features:
+    Coupon feature
 
 SEO
-
 Added meta tags: description, keywords, author, Open Graph data.
 Mobile-responsive design (viewport tag).
 Reduced inline script repetition, optimized DOM lookups.
