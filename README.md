@@ -133,8 +133,12 @@ Reduced inline script repetition, optimized DOM lookups.
 
 Uses a local JSON file for persistence (not a real database).
 
+No Messaging System
+
 Authentication not implemented – all users share the same cart/order flow.
 
-Render cold starts may cause a 5–10s delay on first backend load.
+Railway cold starts may cause a 5–10s delay on first backend load.
+
+No Rate Limits for Auth / Signup
 
 ZIP API occasionally fails for less common postal codes.
