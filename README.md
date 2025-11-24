@@ -122,11 +122,11 @@ Added meta tags: description, keywords, author, Open Graph data.
 Mobile-responsive design (viewport tag).
 Reduced inline script repetition, optimized DOM lookups.
 
-### Before SEO
-![before](image.png)
 
-### After SEO
+### GC2 SEO
 ![after](image-1.png)
+
+### GC3 SEO
 
 ## Limitations
 
